@@ -12,16 +12,20 @@
 
         <div id="home">
             <div>
-                <p> Yaw: {{current.yaw}} </p>
-                <p> Pitch: {{current.pitch}} </p>
-                <p> Roll: {{current.roll}} </p>
+                <p> Duty Cycle: <input v-model.number="duty_cycle" type="text"/> </p>
+                <button @click="set_duty_cycle"> Set </button>
             </div>
-            <div>
-                <p> Yaw: <input v-model.number="target.yaw" type="text"/> </p>
-                <p> Pitch: <input v-model.number="target.pitch" type="text"/> </p>
-                <p> Roll: <input v-model.number="target.roll" type="text"/> </p>
-            </div>
-            <button @click="send_target"> Update! </button>
+<!--            <div>-->
+<!--                <p> Yaw: {{current.yaw}} </p>-->
+<!--                <p> Pitch: {{current.pitch}} </p>-->
+<!--                <p> Roll: {{current.roll}} </p>-->
+<!--            </div>-->
+<!--            <div>-->
+<!--                <p> Yaw: <input v-model.number="target.yaw" type="text"/> </p>-->
+<!--                <p> Pitch: <input v-model.number="target.pitch" type="text"/> </p>-->
+<!--                <p> Roll: <input v-model.number="target.roll" type="text"/> </p>-->
+<!--            </div>-->
+<!--            <button @click="send_target"> Update! </button>-->
         </div>
     </div>
 

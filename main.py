@@ -3,6 +3,11 @@ import tornado.web
 import tornado.websocket
 from asyncio import sleep
 import json
+import PCA9685
+
+# Setup i2c
+pwm = PCA9685.PCA9685(1, 0x40)
+pwm.set_frequency(50)
 
 # List of connected clients
 clients = set()
@@ -32,7 +37,9 @@ class SocketHandler(tornado.websocket.WebSocketHandler):
 
     def on_message(self, message):
         global state
-        state = json.loads(message)
+        # state = json.loads(message)
+        duty_cycle = json.loads(message)
+        pwm.set_pwm(duty_cycle)
 
     def on_close(self):
         # Remove the socket connection

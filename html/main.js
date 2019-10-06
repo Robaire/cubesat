@@ -10,7 +10,8 @@ let app = new Vue({
                     yaw: 0,
                     pitch: 0,
                     roll: 0
-                }
+                },
+                duty_cycle: 0
             },
             mounted: function() {
 
@@ -21,12 +22,16 @@ let app = new Vue({
 
                 // Setup the callback to process received messages
                 this.ws.onmessage = (event) => {
-                    this.current = JSON.parse(event.data);
+                    // this.current = JSON.parse(event.data);
                 }
             },
             methods: {
                 send_target: function() {
                     const message = JSON.stringify(this.target);
+                    this.ws.send(message);
+                },
+                set_duty_cycle: function() {
+                    const message = JSON.stringify(this.duty_cycle);
                     this.ws.send(message);
                 }
             }
