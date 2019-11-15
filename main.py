@@ -14,9 +14,13 @@ with open("config.yml", 'r') as file:
 # Load necessary interfaces
 if config['mode'] is 'full':
 
+    print("Setting up I2C")
+
     # Setup i2c
     pwm = PCA9685.PCA9685(1, 0x40)
     pwm.set_frequency(50)
+
+    print("I2C Setup Complete")
 
 else:
 
@@ -66,8 +70,6 @@ class SocketHandler(tornado.websocket.WebSocketHandler):
         global state
 
 
-
-
         # state = json.loads(message)
         duty_cycle = json.loads(message)
         pwm.set_pwm(duty_cycle)
@@ -87,6 +89,6 @@ if __name__ == "__main__":
     ])
 
     # Start the server
-    app.listen(8181)
+    app.listen(port)
     tornado.ioloop.IOLoop.current().add_callback(broadcast)
     tornado.ioloop.IOLoop.current().start()
