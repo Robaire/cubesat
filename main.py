@@ -24,6 +24,8 @@ if config['mode'] is 'full':
 
 else:
 
+    pwm = None
+
     # Probably do something else
     pass
 
@@ -68,6 +70,7 @@ class SocketHandler(tornado.websocket.WebSocketHandler):
 
 
         global state
+        global pwm
 
 
         # state = json.loads(message)

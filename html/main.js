@@ -41,7 +41,8 @@ let app = new Vue({
                         pitch: 0,
                         roll: 0
                     }
-                }
+                },
+                pwm: 50
             },
             mounted: function() {
 
@@ -58,6 +59,10 @@ let app = new Vue({
             methods: {
                 send_commands: function() {
                     const message = JSON.stringify(this.commands);
+                    this.ws.send(message);
+                },
+                set_dutycycle: function() {
+                    const message = JSON.stringify(this.pwm);
                     this.ws.send(message);
                 }
             }

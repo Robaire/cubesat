@@ -13,19 +13,23 @@
 
         <div>
             <div>
-                <p> Position: </p>
-                <input v-model.number="commands.position.yaw" type="text"/>
-                <input v-model.number="commands.position.pitch" type="text"/>
-                <input v-model.number="commands.position.roll" type="text"/>
-                <button @click="send_commands"> Set </button>
+                <p> Servo Duty-Cycle: </p>
+                <input v-model.number="pwm" type="text"/>
+                <button @click="set_dutycycle"> Set </button>
             </div>
-            <div>
-                <p> 9 DOF: </p>
-                <p> {{state.position.yaw}} </p>
-                <p> {{state.position.pitch}} </p>
-                <p> {{state.position.roll}} </p>
-
-            </div>
+<!--            <div>-->
+<!--                <p> Position: </p>-->
+<!--                <input v-model.number="commands.position.yaw" type="text"/>-->
+<!--                <input v-model.number="commands.position.pitch" type="text"/>-->
+<!--                <input v-model.number="commands.position.roll" type="text"/>-->
+<!--                <button @click="send_commands"> Set </button>-->
+<!--            </div>-->
+<!--            <div>-->
+<!--                <p> 9 DOF: </p>-->
+<!--                <p> {{state.position.yaw}} </p>-->
+<!--                <p> {{state.position.pitch}} </p>-->
+<!--                <p> {{state.position.roll}} </p>-->
+<!--            </div>-->
         </div>
 
         <div id="charts">
