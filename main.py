@@ -5,7 +5,6 @@ import tornado.websocket
 from asyncio import sleep
 import json
 import PCA9685
-import BNO055
 
 
 # Read in run config
@@ -23,12 +22,6 @@ if True:
     pwm.set_pwm(0)
 
     print("I2C Setup Complete")
-
-    dof = BNO055.BNO055()
-    dof.begin()
-    dof.set_mode(0b1000)
-    print("9 DOF Test")
-    print(dof.read_euler())
 
 else:
 
