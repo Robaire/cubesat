@@ -20,6 +20,8 @@ if config['mode'] == 'full':
     pwm.set_frequency(50)
     pwm.set_pwm(0)
 
+
+
 else:
 
     # Probably do something else
@@ -67,7 +69,8 @@ class SocketHandler(tornado.websocket.WebSocketHandler):
         global pwm
 
         duty_cycle = json.loads(message)
-        pwm.set_pwm(duty_cycle)
+        print('Setting duty cycle' + str(float(duty_cycle)))
+        pwm.set_pwm(float(duty_cycle))
 
     def on_close(self):
         # Remove the socket connection
