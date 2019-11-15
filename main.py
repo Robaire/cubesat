@@ -24,6 +24,7 @@ if config['mode'] is 'full':
 
 else:
 
+    print("Not loading I2C")
     pwm = None
 
     # Probably do something else
