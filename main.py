@@ -12,26 +12,20 @@ with open("config.yml", 'r') as file:
     config = load(file, Loader=Loader)
 
 # Load necessary interfaces
-if True:
-
-    print("Setting up I2C")
+if config['mode'] == 'full':
 
     # Setup i2c
+    print("Setting up I2C")
     pwm = PCA9685.PCA9685(1, 0x40)
     pwm.set_frequency(50)
     pwm.set_pwm(0)
 
-    print("I2C Setup Complete")
-
 else:
-
-    print("Not loading I2C")
-    pwm = None
 
     # Probably do something else
     pass
 
-# Set the port for the webserver
+# Set the port for the web server
 port = config.get('port', 8080)
 
 # List of connected clients
@@ -70,12 +64,8 @@ class SocketHandler(tornado.websocket.WebSocketHandler):
     def on_message(self, message):
         # Determine how to handle this message
 
-
-        global state
         global pwm
 
-
-        # state = json.loads(message)
         duty_cycle = json.loads(message)
         pwm.set_pwm(duty_cycle)
 
