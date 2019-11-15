@@ -1,17 +1,47 @@
 let app = new Vue({
             el: '#app',
             data: {
-                current: {
-                    yaw: 0,
-                    pitch: 0,
-                    roll: 0
+                sensor_data: {
+                    accelerometer: {
+                        x: [],
+                        y: [],
+                        z: [],
+                        t: []
+                    },
+                    gyroscope: {
+                        x: [],
+                        y: [],
+                        z: [],
+                        t: []
+                    },
+                    magnetometer: {
+                        x: [],
+                        y: [],
+                        z: [],
+                        t: []
+                    }
                 },
-                target: {
-                    yaw: 0,
-                    pitch: 0,
-                    roll: 0
+                state: {
+                    position: {
+                        yaw: [],
+                        pitch: [],
+                        roll: [],
+                        t: []
+                    },
+                    velocity: {
+                        yaw: [],
+                        pitch: [],
+                        roll: [],
+                        t: []
+                    }
                 },
-                duty_cycle: 0
+                commands: {
+                    position: {
+                        yaw: 0,
+                        pitch: 0,
+                        roll: 0
+                    }
+                }
             },
             mounted: function() {
 
@@ -26,12 +56,8 @@ let app = new Vue({
                 }
             },
             methods: {
-                send_target: function() {
-                    const message = JSON.stringify(this.target);
-                    this.ws.send(message);
-                },
-                set_duty_cycle: function() {
-                    const message = JSON.stringify(this.duty_cycle);
+                send_commands: function() {
+                    const message = JSON.stringify(this.commands);
                     this.ws.send(message);
                 }
             }

@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <script src="vue.min.js"></script>
+    <script src="d3.min.js"></script>
 </head>
 <body>
     <div id="app">
@@ -10,22 +11,20 @@
             <h1>CubeSat Control Console</h1>
         </div>
 
-        <div id="home">
+        <div>
             <div>
-                <p> Duty Cycle: <input v-model.number="duty_cycle" type="text"/> </p>
-                <button @click="set_duty_cycle"> Set </button>
+                <p> Position: </p>
+                <input v-model.number="commands.position.yaw" type="text"/>
+                <input v-model.number="commands.position.pitch" type="text"/>
+                <input v-model.number="commands.position.roll" type="text"/>
+                <button @click="send_commands"> Set </button>
             </div>
-<!--            <div>-->
-<!--                <p> Yaw: {{current.yaw}} </p>-->
-<!--                <p> Pitch: {{current.pitch}} </p>-->
-<!--                <p> Roll: {{current.roll}} </p>-->
-<!--            </div>-->
-<!--            <div>-->
-<!--                <p> Yaw: <input v-model.number="target.yaw" type="text"/> </p>-->
-<!--                <p> Pitch: <input v-model.number="target.pitch" type="text"/> </p>-->
-<!--                <p> Roll: <input v-model.number="target.roll" type="text"/> </p>-->
-<!--            </div>-->
-<!--            <button @click="send_target"> Update! </button>-->
+        </div>
+
+        <div id="charts">
+
+            <svg id="velocity_graph"></svg>
+
         </div>
     </div>
 
