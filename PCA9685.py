@@ -22,6 +22,7 @@ ALL_LED_OFF_H = 0xfd
 
 
 class PCA9685:
+    """ Sets up and controls the PCA9685 I2C LED Controller. """
 
     def __init__(self, bus, address=ADDRESS):
 
