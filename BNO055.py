@@ -14,10 +14,11 @@ MAG_CONFIG = 0x09
 GYR_CONFIG = 0x0a
 
 # Starting addresses of data registers
-TEMP = 0x33
+TEMP = 0x34
 ACC_DATA = 0x08
 GYR_DATA = 0x14
 MAG_DATA = 0x0e
+
 
 class BNO055:
     """ Setups and reads data from the BNO055 9 degree of freedom sensor. """
@@ -42,7 +43,6 @@ class BNO055:
     @staticmethod
     def parse_axis(data, scale):
         """ Splits sensor data into component axis, combining MSB and LSB. """
-        print(data)
         x = int.from_bytes(data[0:2], byteorder='little', signed=True) / scale
         y = int.from_bytes(data[2:4], byteorder='little', signed=True) / scale
         z = int.from_bytes(data[4:6], byteorder='little', signed=True) / scale
