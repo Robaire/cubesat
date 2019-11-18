@@ -5,6 +5,7 @@ import tornado.websocket
 from asyncio import sleep
 import json
 import PCA9685
+import BNO055
 
 
 # Read in run config
