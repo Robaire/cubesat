@@ -1,3 +1,4 @@
+import time
 import smbus
 
 # Default I2C Address of the device
@@ -35,31 +36,32 @@ class BNO055:
         self.bus.write_byte_data(self.address, UNIT_SEL, 0b10000000)  # Degrees, m/s^2, C
 
         # Enter operating mode
+        time.sleep(0.05)
         self.bus.write_byte_data(self.address, OPR_MODE, 0b0111)
 
     @staticmethod
-    def parse_axis(data):
+    def parse_axis(data, scale):
         """ Splits sensor data into component axis, combining MSB and LSB. """
-        x = data[0] + (data[1] << 8)
-        y = data[2] + (data[3] << 8)
-        z = data[4] + (data[5] << 8)
+        print(data)
+        x = int.from_bytes(data[0:2], byteorder='little', signed=True) / scale
+        y = int.from_bytes(data[2:4], byteorder='little', signed=True) / scale
+        z = int.from_bytes(data[4:6], byteorder='little', signed=True) / scale
         return x, y, z
 
     def read_accel(self):
         """ Read data from the accelerometer. """
         data = self.bus.read_i2c_block_data(self.address, ACC_DATA, 6)
-
-        return self.parse_axis(data)
+        return self.parse_axis(data, 100)
 
     def read_gyro(self):
         """ Read data from the gyroscope. """
         data = self.bus.read_i2c_block_data(self.address, GYR_DATA, 6)
-        return self.parse_axis(data)
+        return self.parse_axis(data, 16)
 
     def read_mag(self):
         """ Read data from the magnetometer. """
         data = self.bus.read_i2c_block_data(self.address, MAG_DATA, 6)
-        return self.parse_axis(data)
+        return self.parse_axis(data, 16)
 
     def read_temp(self):
         """ Read data from the temperature sensor. """
