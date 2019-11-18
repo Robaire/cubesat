@@ -12,11 +12,11 @@ ACC_CONFIG = 0x08
 MAG_CONFIG = 0x09
 GYR_CONFIG = 0x0a
 
-# Addresses of data registers
+# Starting addresses of data registers
 TEMP = 0x33
-ACC_DATA = 0x0d
-GYR_DATA = 0x19
-MAG_DATA = 0x13
+ACC_DATA = 0x08
+GYR_DATA = 0x14
+MAG_DATA = 0x0e
 
 class BNO055:
     """ Setups and reads data from the BNO055 9 degree of freedom sensor. """
@@ -40,10 +40,10 @@ class BNO055:
     @staticmethod
     def parse_axis(data):
         """ Splits sensor data into component axis, combining MSB and LSB. """
-        z = (data[0] << 8) + data[1]
-        y = (data[2] << 8) + data[3]
-        x = (data[4] << 8) + data[5]
-        return z, y, x
+        x = data[0] + (data[1] << 8)
+        y = data[2] + (data[3] << 8)
+        z = data[4] + (data[5] << 8)
+        return x, y, z
 
     def read_accel(self):
         """ Read data from the accelerometer. """
