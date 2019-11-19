@@ -67,3 +67,25 @@ class BNO055:
         """ Read data from the temperature sensor. """
         temp = self.bus.read_byte_data(self.address, TEMP)
         return temp
+
+
+class Dummy:
+
+    def __init__(self):
+        pass
+
+    def read_accel(self):
+        """ Read data from the accelerometer. """
+        return 1, 1, 1
+
+    def read_gyro(self):
+        """ Read data from the gyroscope. """
+        return 2, 2, 2
+
+    def read_mag(self):
+        """ Read data from the magnetometer. """
+        return 3, 3, 3
+
+    def read_temp(self):
+        """ Read data from the temperature sensor. """
+        return 25

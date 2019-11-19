@@ -79,3 +79,12 @@ class PCA9685:
             
             self.bus.write_byte_data(self.address, LED0_OFF_L + offset, off_l)
             self.bus.write_byte_data(self.address, LED0_OFF_H + offset, off_h)
+
+
+class Dummy:
+
+    def __init(self):
+        pass
+
+    def set_pwm(self, duty_cycle, channel=None):
+        print("Setting PWM Duty Cycle: " + str(duty_cycle))
