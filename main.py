@@ -15,17 +15,21 @@ with open("config.yml", 'r') as file:
 # Load necessary interfaces
 if config['mode'] == 'full':
 
-    # Setup i2c
-    print("Setting up I2C")
-    pwm = PCA9685.PCA9685(1, 0x40)
+    # Setup PCA9685
+    print("Setting up PWM Driver")
+    pwm = PCA9685.PCA9685(1)
     pwm.set_frequency(50)
     pwm.set_pwm(0)
 
-
+    # Setup BNO055
+    print("Setting up Sensor")
+    sensor = BNO055.BNO055(1)
 
 else:
 
-    # Probably do something else
+    # Create fake devices for testing
+    pwm = PCA9685.Dummy()
+    sensor = BNO055.Dummy()
     pass
 
 # Set the port for the web server
@@ -34,27 +38,27 @@ port = config.get('port', 8080)
 # List of connected clients
 clients = set()
 
-state = {
-    'yaw': 0,
-    'pitch': 0,
-    'roll': 0
-}
 
-position = {
-    'yaw': 0,
-    'pitch': 0,
-    'roll': 0
-}
+# async def broadcast():
+#     """ Callback to push info to the clients"""
+#     while True:
+#         for client in clients:
+#
+#             await client.write_message(json.dumps(state))
+#
+#         await sleep(0.1)
 
 
-async def broadcast():
-    """ Callback to push info to the clients"""
-    while True:
-        for client in clients:
+def send_sensor_data():
 
-            await client.write_message(json.dumps(state))
+    data = {
+        'accel': sensor.read_accel(),
+        'gyro': sensor.read_gyro(),
+        'mag': sensor.read_mag()
+    }
 
-        await sleep(0.1)
+    for client in clients:
+        client.write_message(json.dumps(data))
 
 
 class SocketHandler(tornado.websocket.WebSocketHandler):
@@ -70,7 +74,7 @@ class SocketHandler(tornado.websocket.WebSocketHandler):
         global pwm
 
         duty_cycle = json.loads(message)
-        print('Setting duty cycle' + str(float(duty_cycle)))
+        # print('Setting duty cycle' + str(float(duty_cycle)))
         pwm.set_pwm(float(duty_cycle))
 
     def on_close(self):
@@ -89,5 +93,7 @@ if __name__ == "__main__":
 
     # Start the server
     app.listen(port)
-    tornado.ioloop.IOLoop.current().add_callback(broadcast)
+    # tornado.ioloop.IOLoop.current().add_callback(broadcast)
+    pc = tornado.ioloop.PeriodicCallback(send_sensor_data, 50)
+    pc.start()
     tornado.ioloop.IOLoop.current().start()
