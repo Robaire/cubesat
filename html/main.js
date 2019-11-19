@@ -1,46 +1,10 @@
 let app = new Vue({
             el: '#app',
             data: {
-                sensor_data: {
-                    accelerometer: {
-                        x: [],
-                        y: [],
-                        z: [],
-                        t: []
-                    },
-                    gyroscope: {
-                        x: [],
-                        y: [],
-                        z: [],
-                        t: []
-                    },
-                    magnetometer: {
-                        x: [],
-                        y: [],
-                        z: [],
-                        t: []
-                    }
-                },
-                state: {
-                    position: {
-                        yaw: [],
-                        pitch: [],
-                        roll: [],
-                        t: []
-                    },
-                    velocity: {
-                        yaw: [],
-                        pitch: [],
-                        roll: [],
-                        t: []
-                    }
-                },
-                commands: {
-                    position: {
-                        yaw: 0,
-                        pitch: 0,
-                        roll: 0
-                    }
+                sensor: {
+                    accel: [],
+                    gyro: [],
+                    mag: []
                 },
                 pwm: 50
             },
@@ -53,14 +17,10 @@ let app = new Vue({
 
                 // Setup the callback to process received messages
                 this.ws.onmessage = (event) => {
-                    // this.current = JSON.parse(event.data);
+                    this.sensor = JSON.parse(event.data);
                 }
             },
             methods: {
-                send_commands: function() {
-                    const message = JSON.stringify(this.commands);
-                    this.ws.send(message);
-                },
                 set_dutycycle: function() {
                     const message = JSON.stringify(this.pwm);
                     this.ws.send(message);

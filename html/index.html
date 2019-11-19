@@ -24,12 +24,12 @@
 <!--                <input v-model.number="commands.position.roll" type="text"/>-->
 <!--                <button @click="send_commands"> Set </button>-->
 <!--            </div>-->
-<!--            <div>-->
-<!--                <p> 9 DOF: </p>-->
-<!--                <p> {{state.position.yaw}} </p>-->
-<!--                <p> {{state.position.pitch}} </p>-->
-<!--                <p> {{state.position.roll}} </p>-->
-<!--            </div>-->
+            <div>
+                <p> Sensor Data: </p>
+                <p> Accelerometer: {{sensor.accel}}</p>
+                <p> Gyroscope: {{sensor.gyro}}</p>
+                <p> Magnetometer: {{sensor.mag}}</p>
+            </div>
         </div>
 
         <div id="charts">
