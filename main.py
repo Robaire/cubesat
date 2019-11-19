@@ -30,7 +30,6 @@ else:
     # Create fake devices for testing
     pwm = PCA9685.Dummy()
     sensor = BNO055.Dummy()
-    pass
 
 # Set the port for the web server
 port = config.get('port', 8080)
@@ -94,6 +93,6 @@ if __name__ == "__main__":
     # Start the server
     app.listen(port)
     # tornado.ioloop.IOLoop.current().add_callback(broadcast)
-    pc = tornado.ioloop.PeriodicCallback(send_sensor_data, 50)
+    pc = tornado.ioloop.PeriodicCallback(send_sensor_data, 200)
     pc.start()
     tornado.ioloop.IOLoop.current().start()
