@@ -1,5 +1,6 @@
 import time
 import smbus
+import random
 
 # Default I2C Address of the device
 ADDRESS = 0x28
@@ -74,18 +75,31 @@ class Dummy:
     def __init__(self):
         pass
 
+    def rand_vec(self):
+        return random.random(), random.random(), random.random()
+
     def read_accel(self):
         """ Read data from the accelerometer. """
-        return 1, 1, 1
+        x, y, z = self.rand_vec()
+
+        mag = 9.81/((x**2 + y**2 + z**2)**(1/2))
+
+        return x*mag, y*mag, z*mag
 
     def read_gyro(self):
         """ Read data from the gyroscope. """
-        return 2, 2, 2
+        x, y, z = self.rand_vec()
 
+        mag = 0.05/((x**2 + y**2 + z**2)**(1/2))
+
+        return x*mag, y*mag, z*mag
     def read_mag(self):
         """ Read data from the magnetometer. """
-        return 3, 3, 3
+        x, y, z = self.rand_vec()
+
+        mag = -30/((x**2 + y**2 + z**2)**(1/2))
+        return x*mag, y*mag, z*mag
 
     def read_temp(self):
         """ Read data from the temperature sensor. """
-        return 25
+        return 25 + (random.random() - 0.5)
