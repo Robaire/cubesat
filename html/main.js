@@ -1,12 +1,14 @@
 let app = new Vue({
             el: '#app',
             data: {
-                sensor: {
-                    accel: [0, 0, 0],
-                    gyro: [0, 0, 0],
-                    mag: [0, 0, 0]
+                logs: {
+                    acceleration: [],
+                    angularVelocity: [],
+                    magneticField: []
                 },
-                pwm: 50
+                test: {
+                    type: "example"
+                }
             },
             mounted: function() {
 
@@ -17,31 +19,28 @@ let app = new Vue({
 
                 // Setup the callback to process received messages
                 this.ws.onmessage = (event) => {
-                    this.sensor = JSON.parse(event.data);
+                    const message = JSON.parse(event.data);
+
+                    if(message.type == "SENSOR_DATA"){
+                        this.logs.acceleration.push(message.acceleration);
+                        this.logs.angularVelocity.push(message.angularVelocity);
+                        this.logs.magneticField.push(message.magneticField);
+
+                        console.log(this.logs)
+                    }
+
                 }
             },
             methods: {
-                set_dutycycle: function() {
-                    const message = JSON.stringify(this.pwm);
+
+
+
+
+                setDutycycle: function() {
+
+                    const message = JSON.stringify(this.test);
                     this.ws.send(message);
                 },
 
-                format_sensor_data: function(source) {
-                    let sensor;
-                    let digits;
-
-                    if(source == "accel"){
-                        sensor = this.sensor.accel;
-                        digits = 2;
-                    } else if(source == "gyro"){
-                        sensor = this.sensor.gyro;
-                        digits = 4;
-                    } else if(source == "mag"){
-                        sensor = this.sensor.mag;
-                        digits = 4;
-                    }
-
-                    return `[ ${sensor[0].toFixed(digits)}, ${sensor[1].toFixed(digits)}, ${sensor[2].toFixed(digits)} ]`
-                }
             }
         });

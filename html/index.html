@@ -14,8 +14,7 @@
         <div>
             <div>
                 <p> Servo Duty-Cycle: </p>
-                <input v-model.number="pwm" type="text"/>
-                <button @click="set_dutycycle"> Set </button>
+                <button @click="setDutycycle"> Set </button>
             </div>
 <!--            <div>-->
 <!--                <p> Position: </p>-->
@@ -24,12 +23,6 @@
 <!--                <input v-model.number="commands.position.roll" type="text"/>-->
 <!--                <button @click="send_commands"> Set </button>-->
 <!--            </div>-->
-            <div>
-                <p> Sensor Data: </p>
-                <p> Accelerometer (m/s^2): {{format_sensor_data("accel")}}</p>
-                <p> Gyroscope (d/s): {{format_sensor_data("gyro")}}</p>
-                <p> Magnetometer (uT): {{format_sensor_data("mag")}}</p>
-            </div>
         </div>
 
         <div id="charts">

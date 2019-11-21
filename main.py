@@ -7,7 +7,6 @@ import json
 import PCA9685
 import BNO055
 
-
 # Read in run config
 with open("config.yml", 'r') as file:
     config = load(file, Loader=Loader)
@@ -34,9 +33,6 @@ else:
 # Set the port for the web server
 port = config.get('port', 8080)
 
-# List of connected clients
-clients = set()
-
 
 # async def broadcast():
 #     """ Callback to push info to the clients"""
@@ -48,37 +44,73 @@ clients = set()
 #         await sleep(0.1)
 
 
+# def send_sensor_data():
+#
+#     data = {
+#         'accel': sensor.read_accel(),
+#         'gyro': sensor.read_gyro(),
+#         'mag': sensor.read_mag()
+#     }
+#
+#     for client in clients:
+#         client.write_message(json.dumps(data))
+
 def send_sensor_data():
 
     data = {
-        'accel': sensor.read_accel(),
-        'gyro': sensor.read_gyro(),
-        'mag': sensor.read_mag()
+        'type': 'SENSOR_DATA',
+        'acceleration': sensor.read_accel(),
+        'angularVelocity': sensor.read_gyro(),
+        'magneticField': sensor.read_mag()
     }
 
-    for client in clients:
+    for client in SocketHandler.clients:
         client.write_message(json.dumps(data))
 
 
 class SocketHandler(tornado.websocket.WebSocketHandler):
     """ Handles all socket requests from the client. """
 
+    # Set of clients connected to this socket
+    clients = set()
+
     def open(self):
         # Add the client to the client list
-        clients.add(self)
-
-    def on_message(self, message):
-        # Determine how to handle this message
-
-        global pwm
-
-        duty_cycle = json.loads(message)
-        # print('Setting duty cycle' + str(float(duty_cycle)))
-        pwm.set_pwm(float(duty_cycle))
+        self.clients.add(self)
 
     def on_close(self):
         # Remove the socket connection
-        clients.remove(self)
+        self.clients.remove(self)
+
+    def on_message(self, message):
+
+        # Read the message in as JSON
+        data = json.loads(message)
+
+        # Validate the message format
+        try:
+            header = data["type"]
+        except:
+            print("Improperly formatted message!")
+            print(message)
+            return
+
+        # Map of handler functions for different messages
+        handlers = {
+            "example": None
+        }
+
+        # Call the appropriate handler
+        if header in handlers:
+
+            # Call the handler function
+            try:
+                handlers[header]()
+            except:
+                return
+        else:
+            print("Unrecognized message type!")
+            print(data)
 
 
 # Main Entry
@@ -92,7 +124,6 @@ if __name__ == "__main__":
 
     # Start the server
     app.listen(port)
-    # tornado.ioloop.IOLoop.current().add_callback(broadcast)
     pc = tornado.ioloop.PeriodicCallback(send_sensor_data, 200)
     pc.start()
     tornado.ioloop.IOLoop.current().start()
