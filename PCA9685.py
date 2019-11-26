@@ -52,7 +52,7 @@ class PCA9685:
         # Enable the Output
         self.enable()
 
-    def set_pwm(self, duty_cycle, channel=None):
+    def set_duty_cycle(self, duty_cycle, channel=None):
         """ Set the PWM of a specific channel, or all channels if channel is None. """
 
         # Calculate the pulse width
@@ -86,5 +86,5 @@ class Dummy:
     def __init(self):
         pass
 
-    def set_pwm(self, duty_cycle, channel=None):
+    def set_duty_cycle(self, duty_cycle, channel=None):
         print("Setting PWM Duty Cycle: " + str(duty_cycle))
