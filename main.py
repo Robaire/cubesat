@@ -18,7 +18,6 @@ if config['mode'] == 'full':
     print("Setting up PWM Driver")
     pwm = PCA9685.PCA9685(1)
     pwm.set_frequency(50)
-    pwm.set_pwm(0)
 
     # Setup BNO055
     print("Setting up Sensor")
@@ -44,17 +43,6 @@ port = config.get('port', 8080)
 #         await sleep(0.1)
 
 
-# def send_sensor_data():
-#
-#     data = {
-#         'accel': sensor.read_accel(),
-#         'gyro': sensor.read_gyro(),
-#         'mag': sensor.read_mag()
-#     }
-#
-#     for client in clients:
-#         client.write_message(json.dumps(data))
-
 def send_sensor_data():
 
     data = {
@@ -66,6 +54,18 @@ def send_sensor_data():
 
     for client in SocketHandler.clients:
         client.write_message(json.dumps(data))
+
+
+def setMotorSpeed(body):
+    throttle = body["throttle"]
+
+    # Map the throttle value onto the correct range
+    duty_cycle = 0.05 + ((throttle / 100) * 0.05)
+
+    print(f'Throttle: {throttle}%, Duty Cycle: {duty_cycle}, Pulse Width: {duty_cycle * 20}ms')
+
+    # Set the PWM driver to output the new duty cycle
+    pwm.set_duty_cycle(duty_cycle)
 
 
 class SocketHandler(tornado.websocket.WebSocketHandler):
@@ -89,7 +89,7 @@ class SocketHandler(tornado.websocket.WebSocketHandler):
 
         # Validate the message format
         try:
-            header = data["type"]
+            header = data["header"]
         except:
             print("Improperly formatted message!")
             print(message)
@@ -97,7 +97,8 @@ class SocketHandler(tornado.websocket.WebSocketHandler):
 
         # Map of handler functions for different messages
         handlers = {
-            "example": None
+            "example": None,
+            "MOTOR_SPEED": setMotorSpeed
         }
 
         # Call the appropriate handler
@@ -105,9 +106,9 @@ class SocketHandler(tornado.websocket.WebSocketHandler):
 
             # Call the handler function
             try:
-                handlers[header]()
+                handlers[header](data["body"])
             except:
-                return
+                print("Error calling handler function for: " + header)
         else:
             print("Unrecognized message type!")
             print(data)
@@ -125,5 +126,5 @@ if __name__ == "__main__":
     # Start the server
     app.listen(port)
     pc = tornado.ioloop.PeriodicCallback(send_sensor_data, 200)
-    pc.start()
+    # pc.start()
     tornado.ioloop.IOLoop.current().start()

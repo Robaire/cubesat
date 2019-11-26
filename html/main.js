@@ -6,6 +6,9 @@ let app = new Vue({
                     angularVelocity: [],
                     magneticField: []
                 },
+                motor: {
+                    throttle: 0
+                },
                 test: {
                     type: "example"
                 }
@@ -25,22 +28,19 @@ let app = new Vue({
                         this.logs.acceleration.push(message.acceleration);
                         this.logs.angularVelocity.push(message.angularVelocity);
                         this.logs.magneticField.push(message.magneticField);
-
-                        console.log(this.logs)
                     }
 
                 }
             },
             methods: {
-
-
-
-
-                setDutycycle: function() {
-
-                    const message = JSON.stringify(this.test);
+                sendMessage: function(header, body) {
+                    const message = JSON.stringify({header: header, body: body});
                     this.ws.send(message);
                 },
+                setThrottle: function() {
+                    // Sends the motor throttle
+                    this.sendMessage("MOTOR_SPEED", this.motor);
+                }
 
             }
         });

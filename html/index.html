@@ -13,8 +13,9 @@
 
         <div>
             <div>
-                <p> Servo Duty-Cycle: </p>
-                <button @click="setDutycycle"> Set </button>
+                <h1> Motor Throttle %: </h1>
+                <input v-model.number="motor.throttle" type="text"/>
+                <button @click="setThrottle"> Set </button>
             </div>
 <!--            <div>-->
 <!--                <p> Position: </p>-->
