@@ -29,7 +29,11 @@ class LTC2945:
         return volt
 
     def read(self):
-        print(self.bus.read_i2c_block_data(self.address, 0x00, 1))
+        # print(self.bus.read_i2c_block_data(self.address, 0x00, 1))
+        print(self.bus.read_i2c_block_data(self.address, 0x05, 3))
+        print(self.bus.read_i2c_block_data(self.address, 0x14, 2))
+        print(self.bus.read_i2c_block_data(self.address, 0x1E, 2))
+        print(self.bus.read_i2c_block_data(self.address, 0x28, 3))
 
 
 class Dummy:
