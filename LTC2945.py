@@ -38,13 +38,13 @@ class LTC2945:
         sense = self.bus.read_i2c_block_data(self.address, 0x14, 2)
         vin = self.bus.read_i2c_block_data(self.address, 0x1E, 2)
 
-        LSB = sense[1] >> 4 | sense[0] << 4
-        MSB = sense[0] >> 4
+        #LSB = sense[1] >> 4 | sense[0] << 4
+        #MSB = sense[0] >> 4
 
-        print(bin(MSB) + ", " + bin(LSB))
-        print(bin(sense[0]) + ", " + bin(sense[1]))
+        #print(bin(MSB) + ", " + bin(LSB))
+        #print(bin(sense[0]) + ", " + bin(sense[1]))
 
-        v_sense = int.from_bytes(bytearray([MSB, LSB]), byteorder='big', signed=False)
+        v_sense = int.from_bytes(sense, byteorder='big', signed=False) >> 4
         print(v_sense)
 
         # print(bin(vin[0]) + ", " + bin(vin[1]))
