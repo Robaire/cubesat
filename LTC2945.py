@@ -43,9 +43,9 @@ class LTC2945:
         v_sense = int.from_bytes(sense, byteorder='big', signed=False) >> 4
         v_vin = int.from_bytes(vin, byteorder='big', signed=False) >> 4
 
-        print("Power: " + p_power)
-        print("V Sense: " + v_sense)
-        print("V In:" + v_vin)
+        print("Power: " + str(p_power))
+        print("V Sense: " + str(v_sense))
+        print("V In:" + str(v_vin))
 
 class Dummy:
     def __init__(self):
