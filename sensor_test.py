@@ -20,5 +20,5 @@ power = LTC2945.LTC2945(1)
 print("Initialization complete")
 
 while(True):
-    power.read_voltage()
-    time.sleep(0.5)
+    power.read()
+    time.sleep(1)
