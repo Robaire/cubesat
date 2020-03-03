@@ -39,9 +39,9 @@ class LTC2945:
         sense = self.bus.read_i2c_block_data(self.address, 0x14, 2)
         vin = self.bus.read_i2c_block_data(self.address, 0x1E, 2)
 
-        power_v = int.from_bytes(power, byteorder='big', signed=False)
-        sense_v = int.from_bytes(sense, byteorder='big', signed=False)
-        vin_v = int.from_bytes(vin, byteorder='big', signed=False)
+        power_v = int.from_bytes(power, byteorder='little', signed=False)
+        sense_v = int.from_bytes(sense, byteorder='little', signed=False)
+        vin_v = int.from_bytes(vin, byteorder='little', signed=False)
 
         print(power_v)
         print(sense_v)
