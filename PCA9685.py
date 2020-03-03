@@ -1,7 +1,7 @@
 import smbus
 
 # Default I2C Address of the device
-ADDRESS = 0x40
+ADDRESS = 0x70
 
 # Addresses of setting registers
 MODE1 = 0x00

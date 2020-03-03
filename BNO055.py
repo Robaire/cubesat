@@ -3,7 +3,7 @@ import smbus
 import random
 
 # Default I2C Address of the device
-ADDRESS = 0x28
+ADDRESS = 0x29
 
 # Addresses of setting registers
 ST_RESULT = 0x36  # Contains the result of the startup self check
