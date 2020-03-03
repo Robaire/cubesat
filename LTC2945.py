@@ -43,7 +43,10 @@ class LTC2945:
 
         print(bin(MSB) + ", " + bin(LSB))
         print(bin(sense[0]) + ", " + bin(sense[1]))
-        
+
+        v_sense = int.from_bytes(bytearray([MSB, LSB]), byteorder='big', signed=False)
+        print(v_sense)
+
         # print(bin(vin[0]) + ", " + bin(vin[1]))
 
         # sense_v = int.from_bytes([MSB, LSB], byteorder='big', signed=False)
