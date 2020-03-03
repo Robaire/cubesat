@@ -35,22 +35,17 @@ class LTC2945:
         # print(self.bus.read_i2c_block_data(self.address, 0x1E, 2))
         # print(self.bus.read_i2c_block_data(self.address, 0x28, 2))
 
+        power = self.bus.read_i2c_block_data(self.address, 0x05, 3)
         sense = self.bus.read_i2c_block_data(self.address, 0x14, 2)
         vin = self.bus.read_i2c_block_data(self.address, 0x1E, 2)
 
-        #LSB = sense[1] >> 4 | sense[0] << 4
-        #MSB = sense[0] >> 4
-
-        #print(bin(MSB) + ", " + bin(LSB))
-        #print(bin(sense[0]) + ", " + bin(sense[1]))
-
+        p_power = int.from_bytes(power, byteorder='big', signed=False)
         v_sense = int.from_bytes(sense, byteorder='big', signed=False) >> 4
-        print(v_sense)
+        v_vin = int.from_bytes(vin, byteorder='big', signed=False) >> 4
 
-        # print(bin(vin[0]) + ", " + bin(vin[1]))
-
-        # sense_v = int.from_bytes([MSB, LSB], byteorder='big', signed=False)
-        # print(sense_v)
+        print("Power: " + p_power)
+        print("V Sense: " + v_sense)
+        print("V In:" + v_vin)
 
 class Dummy:
     def __init__(self):
