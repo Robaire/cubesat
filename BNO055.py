@@ -77,7 +77,7 @@ class BNO055:
     def read_euler(self):
         """ Read the euler angles from the sensor. """
         data = self.bus.read_i2c_block_data(self.address, 0x1A, 6)
-        return self.parse_axis(data, 1)
+        return self.parse_axis(data, 16)
 
     def read_quaternion(self):
         """ Read orientation quaternion from the sensor. """
