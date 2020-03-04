@@ -21,8 +21,12 @@ print("Initialization complete")
 
 while(True):
 
-    print(power.read_vin())
-    print(power.read_sense())
-    print(power.read_current())
-    print(power.read_power())
+    # print(power.read_vin())
+    # print(power.read_sense())
+    # print(power.read_current())
+    # print(power.read_power())
+
+    print(sensor.read_accel())
+    print(sensor.read_gyro())
+
     time.sleep(1)
