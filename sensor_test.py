@@ -29,6 +29,7 @@ while(True):
     # print(sensor.read_accel())
     # print(sensor.read_gyro())
 
-    print(sensor.read_euler())
+    # print(sensor.read_euler())
+    print(sensor.read_quaternion())
 
     time.sleep(1)
