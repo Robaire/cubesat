@@ -30,9 +30,9 @@ class BNO055:
         self.address = address
 
         # Set sensor settings
-        self.bus.write_byte_data(self.address, ACC_CONFIG, 0b00001100)  # 2g, 62.5Hz
-        self.bus.write_byte_data(self.address, MAG_CONFIG, 0b00011011)  # High Accuracy, 10Hz
-        self.bus.write_byte_data(self.address, GYR_CONFIG, 0b00001011)  # 250dps, 230Hz
+        #self.bus.write_byte_data(self.address, ACC_CONFIG, 0b00001100)  # 2g, 62.5Hz
+        #self.bus.write_byte_data(self.address, MAG_CONFIG, 0b00011011)  # High Accuracy, 10Hz
+        #self.bus.write_byte_data(self.address, GYR_CONFIG, 0b00001011)  # 250dps, 230Hz
 
         # Set units for all sensors
         self.bus.write_byte_data(self.address, UNIT_SEL, 0b10000000)  # Degrees, m/s^2, C
