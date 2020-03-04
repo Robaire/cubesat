@@ -26,7 +26,9 @@ while(True):
     # print(power.read_current())
     # print(power.read_power())
 
-    print(sensor.read_accel())
-    print(sensor.read_gyro())
+    # print(sensor.read_accel())
+    # print(sensor.read_gyro())
+
+    print(sensor.read_euler())
 
     time.sleep(1)
