@@ -20,7 +20,6 @@ power = LTC2945.LTC2945(1)
 print("Initialization complete")
 
 
-
 while(True):
 
     # print(power.read_vin())
@@ -35,8 +34,8 @@ while(True):
     # print(sensor.read_quaternion())
     # time.sleep(1)
 
-    pwm.set_duty_cycle(1)
+    pwm.set_duty_cycle(0.1)
     time.sleep(10)
-    pwm.set_duty_cycle(0)
+    pwm.set_duty_cycle(0.0)
     time.sleep(10)
 
