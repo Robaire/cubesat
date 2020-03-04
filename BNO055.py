@@ -39,7 +39,7 @@ class BNO055:
 
         # Enter operating mode
         time.sleep(0.05)
-        #self.bus.write_byte_data(self.address, OPR_MODE, 0b0111)
+        # self.bus.write_byte_data(self.address, OPR_MODE, 0b0111)
         self.bus.write_byte_data(self.address, OPR_MODE, 0b1100)
 
 
@@ -79,6 +79,8 @@ class BNO055:
     def read_quaternion(self):
         """ Read orientation quaternion from the sensor. """
         data = self.bus.read_i2c_block_data(self.address, 0x20, 8)
+
+        print(data)
 
         w = int.from_bytes(data[0:2], byteorder='little', signed=True)
         x = int.from_bytes(data[2:4], byteorder='little', signed=True)
