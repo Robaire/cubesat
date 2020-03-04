@@ -29,6 +29,9 @@ class BNO055:
         self.bus = smbus.SMBus(bus)
         self.address = address
 
+        # Enter configuration mode
+        self.bus.write_byte_data(self.address, OPR_MODE, 0b0000)
+
         # Set sensor settings
         #self.bus.write_byte_data(self.address, ACC_CONFIG, 0b00001100)  # 2g, 62.5Hz
         #self.bus.write_byte_data(self.address, MAG_CONFIG, 0b00011011)  # High Accuracy, 10Hz
