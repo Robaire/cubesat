@@ -39,7 +39,9 @@ class BNO055:
 
         # Enter operating mode
         time.sleep(0.05)
-        self.bus.write_byte_data(self.address, OPR_MODE, 0b0111)
+        #self.bus.write_byte_data(self.address, OPR_MODE, 0b0111)
+        self.bus.write_byte_data(self.address, OPR_MODE, 0b1100)
+
 
     @staticmethod
     def parse_axis(data, scale):
@@ -69,6 +71,8 @@ class BNO055:
         temp = self.bus.read_byte_data(self.address, TEMP)
         return temp
 
+    def read_quaternion(self):
+        """ Read orientation quaternion from the sensor. """
 
 class Dummy:
 
