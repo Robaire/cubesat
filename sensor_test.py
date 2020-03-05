@@ -19,23 +19,20 @@ power = LTC2945.LTC2945(1)
 # Setup complete
 print("Initialization complete")
 
-
+counter = 0
 while(True):
 
-    # print(power.read_vin())
-    # print(power.read_sense())
-    # print(power.read_current())
-    # print(power.read_power())
+    vin = power.read_vin()
+    current = power.read_current()
 
-    # print(sensor.read_accel())
-    # print(sensor.read_gyro())
+    print("Battery Voltage: " + str(vin))
+    print("Current Consumption: " + str(vin))
 
-    # print(sensor.read_euler())
-    # print(sensor.read_quaternion())
-    # time.sleep(1)
+    if counter == 5:
+        pwm.set_duty_cycle(0.1, 0)
+    elif counter > 10:
+        pwm.set_duty_cycle(0.0, 0)
+        counter = 0
 
-    pwm.set_duty_cycle(0.1)
-    time.sleep(10)
-    pwm.set_duty_cycle(0.0)
-    time.sleep(10)
-
+    counter += 0.1
+    time.sleep(0.5)
