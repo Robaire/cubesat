@@ -109,11 +109,11 @@ def controller():
         # Determine which control mode to use
 
         if state['activeControl'] == 'None':
-            pwm.set_duty_cycle(0)
+            pwm.set_throttle(0)
 
         if state['activeControl'] == 'Proportional':
             constant = float(state['controlSettings']['proportional']['constant'])
-            pwm.set_duty_cycle(constant, 1)
+            pwm.set_throttle(constant, 1)
 
         if state['activeControl'] == 'Bang-Bang':
             pass
@@ -123,7 +123,7 @@ def controller():
 
     else:
         # Disable all motors
-        pwm.set_duty_cycle(0)
+        pwm.set_throttle(0)
 
 
 class SocketHandler(tornado.websocket.WebSocketHandler):
