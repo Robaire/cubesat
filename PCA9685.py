@@ -56,7 +56,7 @@ class PCA9685:
         """ Set the PWM of a specific channel, or all channels if channel is None. """
 
         # Calculate the pulse width
-        width = round(4095 * duty_cycle)
+        width = int(round(4095 * duty_cycle))
 
         # Split into bytes
         off_l = width & 0xff
@@ -80,6 +80,10 @@ class PCA9685:
             self.bus.write_byte_data(self.address, LED0_OFF_L + offset, off_l)
             self.bus.write_byte_data(self.address, LED0_OFF_H + offset, off_h)
 
+    def set_throttle(self, throttle, channel=None):
+        """ Throttle has range [-1, 1]. """
+        duty_cycle = 0.075 + (0.025 * throttle)
+        self.set_duty_cycle(duty_cycle, channel)
 
 class Dummy:
 
