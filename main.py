@@ -108,17 +108,17 @@ def controller():
     if state['isEnabled']:
         # Determine which control mode to use
 
-        if state['activeControl'] is 'None':
+        if state['activeControl'] == 'None':
             pwm.set_duty_cycle(0.0)
 
-        if state['activeControl'] is 'Proportional':
+        if state['activeControl'] == 'Proportional':
             constant = state['controlSettings']['proportional']['constant']
             pwm.set_duty_cycle(constant, 1)
 
-        if state['activeControl'] is 'Bang-Bang':
+        if state['activeControl'] == 'Bang-Bang':
             pass
 
-        if state['activeControl'] is 'PID':
+        if state['activeControl'] == 'PID':
             pass
 
     else:

@@ -87,4 +87,4 @@ class Dummy:
         pass
 
     def set_duty_cycle(self, duty_cycle, channel=None):
-        print("Setting PWM Duty Cycle: " + str(duty_cycle))
+        pass
