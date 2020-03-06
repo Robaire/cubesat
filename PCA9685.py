@@ -85,13 +85,13 @@ class PCA9685:
 
         # Duty cycle deadband = [0.08, 0.10]
         if throttle == 0:
-            duty_cycle = 0.09
-        elif throttle > 0.01:
-            duty_cycle = 0.10 + 0.03 * throttle
-        elif throttle < -0.01:
-            duty_cycle = 0.08 + 0.03 * throttle
+            duty_cycle = 0.0766
+        elif throttle > 0.001:
+            duty_cycle = 0.0782 + (0.0497 * throttle)
+        elif throttle < -0.001:
+            duty_cycle = 0.075 + (0.05 * throttle)
         else:
-            duty_cycle = 0.09
+            duty_cycle = 0.0766
 
         self.set_duty_cycle(duty_cycle, channel)
 
