@@ -2,16 +2,43 @@ h1, h2, h3 {
     text-align: center;
 }
 
+.right {
+    text-align: right;
+}
+.left {
+    text-align: left;
+}
+.symbol {
+    display: block;
+    text-align: center;
+}
+
 #header {
     display: flex;
     height: 12rem;
     align-items: center;
-}
-
-#config {
-    height: 10rem;
+    margin-top: 1rem;
+    border-bottom: #222222;
+    border-width: 3px;
 }
 
 #data {
+    margin-top: 3rem;
     height: 50rem;
 }
+
+input {
+    width: 5rem;
+}
+
+p {
+    display: inline;
+}
+
+/*input, button, p {*/
+/*    display: inline;*/
+/*}*/
+
+/*input {*/
+/*    width: 5rem;*/
+/*}*/

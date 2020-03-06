@@ -44,16 +44,7 @@ else:
 # Set the port for the web server
 port = config.get('port', 8080)
 
-# async def broadcast():
-#     """ Callback to push info to the clients"""
-#     while True:
-#         for client in clients:
-#
-#             await client.write_message(json.dumps(state))
-#
-#         await sleep(0.1)
-
-
+# Outgoing Data Handlers
 def send_euler_data():
 
     euler = sensor.read_euler()
@@ -113,7 +104,7 @@ def send_data():
     send_power_data()
     send_target_data()
 
-
+# Incoming Data Handlers
 def setMotorSpeed(body):
     throttle = body["throttle"]
 
@@ -126,6 +117,54 @@ def setMotorSpeed(body):
     pwm.set_duty_cycle(duty_cycle)
 
 
+# Global State
+state = {
+    'isEnabled': False,
+    'controlOptions': ['None', 'Proportional', 'Bang-Bang', 'PID'],
+    'activeControl': 'None',
+    'controlSettings': {
+        'proportional': {'constant': 0},
+        'bangbang': {
+            'threshold': 0,
+            'strength': 0,
+        },
+        'pid': {
+            'p': 0,
+            'i': 0,
+            'd': 0
+        },
+        'target': {
+            'x': 100,
+            'y': -20,
+            'z': 18
+        }
+    }
+}
+
+
+def send_state():
+    """ Sends the entire state to all connected clients. """
+    message = json.dumps({
+        'type': 'STATE',
+        'body': state
+    })
+    for client in SocketHandler.clients:
+        client.write_message(message)
+
+
+def set_enable_state(body):
+    state['isEnabled'] = body
+    send_state()
+
+
+def set_control_state(body):
+    state['activeControl'] = body
+    send_state()
+
+def set_control_settings(body):
+    state['controlSettings'] = body
+    send_state()
+
 class SocketHandler(tornado.websocket.WebSocketHandler):
     """ Handles all socket requests from the client. """
 
@@ -135,6 +174,13 @@ class SocketHandler(tornado.websocket.WebSocketHandler):
     def open(self):
         # Add the client to the client list
         self.clients.add(self)
+
+        # Send the client the most recent state available
+        message = json.dumps({
+            'type': 'STATE',
+            'body': state
+        })
+        self.write_message(message)
 
     def on_close(self):
         # Remove the socket connection
@@ -156,7 +202,10 @@ class SocketHandler(tornado.websocket.WebSocketHandler):
         # Map of handler functions for different messages
         handlers = {
             "example": None,
-            "MOTOR_SPEED": setMotorSpeed
+            "MOTOR_SPEED": setMotorSpeed,
+            "ENABLE": set_enable_state,
+            "CONTROL": set_control_state,
+            "CONTROL_SETTINGS": set_control_settings
         }
 
         # Call the appropriate handler
@@ -183,6 +232,6 @@ if __name__ == "__main__":
 
     # Start the server
     app.listen(port)
-    pc = tornado.ioloop.PeriodicCallback(send_data, 200)
+    pc = tornado.ioloop.PeriodicCallback(send_data, 800)
     pc.start()
     tornado.ioloop.IOLoop.current().start()

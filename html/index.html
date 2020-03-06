@@ -18,7 +18,7 @@
     <div class="container" id="app">
         <div class="row" id="header">
             <div class="two columns">
-                <button> Enable </button>
+                <p> Uptime: </p>
             </div>
             <div class="eight columns">
                 <h1> Testbed Control Console </h1>
@@ -29,66 +29,103 @@
             </div>
         </div>
 
-        <div class="row" id="config">
-            <div class="3 columns"> <p> Configuration: </p> <button> Options </button> </div>
-            <div class="9 columns"> <p> Configuration specific options go here. </p> </div>
+        <div class="row" id="configSelection">
+            <div class="three columns right">
+                <h5> Active Control: </h5>
+            </div>
+            <div class="seven columns">
+                <select v-model="state.activeControl" v-on:change="updateControl">
+                    <option v-for="option in state.controlOptions" v-bind:value="option"> {{option}} </option>
+                </select>
+            </div>
+            <div class="one column">
+                <button v-on:click="toggleEnable" v-bind:class="{'button-primary': state.isEnabled}">
+                    <template v-if="state.isEnabled">
+                        Disable
+                    </template>
+                    <template v-else>
+                        Enable
+                    </template>
+                </button>
+            </div>
+        </div>
+        <div class="row" id="configOptions">
+            <div class="three columns right">
+                <h5> Configuration: </h5>
+            </div>
+            <div class="seven columns">
+                <template v-if="state.activeControl == 'None'">
+                    <p> Change the active control method to view options. </p>
+                </template>
+                <template v-if="state.activeControl == 'Proportional'">
+                    <p> Proportional Constant: </p>
+                    <input v-model="state.controlSettings.proportional.constant">
+                </template>
+                <template v-if="state.activeControl == 'Bang-Bang'">
+                    <p> Threshold: </p>
+                    <input v-model="state.controlSettings.bangbang.threshold">
+                    <p> Strength: </p>
+                    <input v-model="state.controlSettings.bangbang.strength">
+                </template>
+                <template v-if="state.activeControl == 'PID'">
+                    <p> P: </p>
+                    <input v-model="state.controlSettings.pid.p">
+                    <p> I: </p>
+                    <input v-model="state.controlSettings.pid.i">
+                    <p> D: </p>
+                    <input v-model="state.controlSettings.pid.d">
+                </template>
+            </div>
+            <div class="one column">
+                <button v-on:click="updateControlSettings"> Update </button>
+            </div>
+        </div>
+        <div class="row" id="targetSetting">
+            <div class="three columns right">
+                <h5> Set New Target: </h5>
+            </div>
+            <div class="seven columns">
+                <p> &phi;: </p><input v-model.number="newTarget.x">
+                <p> &theta;: </p><input v-model.number="newTarget.y">
+                <p> &psi;: </p><input v-model.number="newTarget.z">
+            </div>
+            <div class="one column">
+                <button v-on:click="updateTarget"> Update </button>
+            </div>
         </div>
 
         <div class="row" id="data">
-            <div class="four columns">
+            <div class="three columns">
                 <h3> Target </h3>
-                <p> &phi;: {{target.x | long}} </p>
-                <p> &theta;: {{target.y | long}}</p>
-                <p> &psi;: {{target.z | long}}</p>
+                <h5 class="symbol"> &phi;: {{state.controlSettings.target.x | long}} </h5>
+                <h5 class="symbol"> &theta;: {{state.controlSettings.target.y | long}}</h5>
+                <h5 class="symbol"> &psi;: {{state.controlSettings.target.z | long}}</h5>
             </div>
 
-            <div class="four columns">
+            <div class="three columns">
                 <h3> Orientation </h3>
-                <p> &phi;: {{euler.x | long}} </p>
-                <p> &theta;: {{euler.y | long}}</p>
-                <p> &psi;: {{euler.z | long}}</p>
+                <h5 class="symbol"> &phi;: {{euler.x | long}} </h5>
+                <h5 class="symbol"> &theta;: {{euler.y | long}}</h5>
+                <h5 class="symbol"> &psi;: {{euler.z | long}}</h5>
             </div>
 
-            <div class="four columns">
-                <h3> Wheel Velocity </h3>
-                <p> &phi;: {{wheel.x | long}} </p>
-                <p> &theta;: {{wheel.y | long}}</p>
-                <p> &psi;: {{wheel.z | long}}</p>
+            <div class="three columns">
+                <h3> &Delta; Target </h3>
+                <h5 class="symbol"> &phi;: {{euler.x - state.controlSettings.target.x | long}} </h5>
+                <h5 class="symbol"> &theta;: {{euler.y - state.controlSettings.target.y | long}}</h5>
+                <h5 class="symbol"> &psi;: {{euler.z - state.controlSettings.target.z | long}}</h5>
+            </div>
+
+            <div class="three columns">
+                <h3> Velocity </h3>
+                <h5 class="symbol"> &phi;: {{wheel.x | long}} </h5>
+                <h5 class="symbol"> &theta;: {{wheel.y | long}}</h5>
+                <h5 class="symbol"> &psi;: {{wheel.z | long}}</h5>
             </div>
         </div>
+
     </div>
 
     <script src="main.js"></script>
 </body>
-<!--<body>-->
-<!--    <div id="app">-->
-<!--        <div id="header">-->
-<!--            <h1>St</h1>-->
-<!--            <h1>CubeSat Control Console</h1>-->
-<!--        </div>-->
-
-<!--        <div>-->
-<!--            <div>-->
-<!--                <h1> Motor Throttle %: </h1>-->
-<!--                <input v-model.number="motor.throttle" type="text"/>-->
-<!--                <button @click="setThrottle"> Set </button>-->
-<!--            </div>-->
-<!--&lt;!&ndash;            <div>&ndash;&gt;-->
-<!--&lt;!&ndash;                <p> Position: </p>&ndash;&gt;-->
-<!--&lt;!&ndash;                <input v-model.number="commands.position.yaw" type="text"/>&ndash;&gt;-->
-<!--&lt;!&ndash;                <input v-model.number="commands.position.pitch" type="text"/>&ndash;&gt;-->
-<!--&lt;!&ndash;                <input v-model.number="commands.position.roll" type="text"/>&ndash;&gt;-->
-<!--&lt;!&ndash;                <button @click="send_commands"> Set </button>&ndash;&gt;-->
-<!--&lt;!&ndash;            </div>&ndash;&gt;-->
-<!--        </div>-->
-
-<!--        <div id="charts">-->
-
-<!--            <svg id="velocity_graph"></svg>-->
-
-<!--        </div>-->
-<!--    </div>-->
-
-<!--    <script src="main.js"></script>-->
-<!--</body>-->
 </html>
