@@ -106,14 +106,33 @@ def controller():
     """ Handles all control logic. """
 
     if state['isEnabled']:
-        # Determine which control mode to use
 
+        # Get the current and target positions
+        target = state['controlSettings']['target']
+        position = sensor['euler']
+
+        # Compare the positions
+        dx = target['x'] - position['x']
+        dy = target['y'] - position['y']
+        dz = target['z'] - position['z']
+
+        # Determine which control mode to use
         if state['activeControl'] == 'None':
             pwm.set_throttle(0)
 
         if state['activeControl'] == 'Proportional':
+
+            # Retrieve settings from the state
             constant = float(state['controlSettings']['proportional']['constant'])
-            pwm.set_throttle(constant, 1)
+
+            # Saturate the function values at 1 or -1
+            dx = max(min(dx * constant, 1), -1)
+            dy = max(min(dy * constant, 1), -1)
+            dz = max(min(dz * constant, 1), -1)
+
+            pwm.set_throttle(dx, 0)
+            pwm.set_throttle(dy, 2)
+            pwm.set_throttle(dz, 1)
 
         if state['activeControl'] == 'Bang-Bang':
 
@@ -122,22 +141,13 @@ def controller():
             threshold = float(settings['threshold'])
             strength = float(settings['strength']) / 100
 
-            # Get the current and target positions
-            target = state['controlSettings']['target']
-            position = sensor['euler']
-
-            # Compare the positions
-            dx = target['x'] - position['x']
-            dy = target['y'] - position['y']
-            dz = target['z'] - position['z']
-
             # Set the throttle based on the sign of the results
             if abs(dx) < threshold:
                 pwm.set_throttle(0, 0)
             elif dx > 0:
-                pwm.set_throttle(1 * strength, 0)
-            elif dx < 0:
                 pwm.set_throttle(-1 * strength, 0)
+            elif dx < 0:
+                pwm.set_throttle(1 * strength, 0)
 
             if abs(dy) < threshold:
                 pwm.set_throttle(0, 2)
@@ -152,7 +162,6 @@ def controller():
                 pwm.set_throttle(1 * strength, 1)
             elif dz < 0:
                 pwm.set_throttle(-1 * strength, 1)
-
 
         if state['activeControl'] == 'PID':
             pwm.set_throttle(0)
