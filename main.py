@@ -116,10 +116,46 @@ def controller():
             pwm.set_throttle(constant, 1)
 
         if state['activeControl'] == 'Bang-Bang':
-            pass
+
+            # Retrieve settings from the state
+            settings = state['controlSettings']['bangbang']
+            threshold = float(settings['threshold'])
+            strength = float(settings['strength']) / 100
+
+            # Get the current and target positions
+            target = state['controlSettings']['target']
+            position = sensor['euler']
+
+            # Compare the positions
+            dx = target['x'] - position['x']
+            dy = target['y'] - position['y']
+            dz = target['z'] - position['z']
+
+            # Set the throttle based on the sign of the results
+            if abs(dx) < threshold:
+                pass
+            elif dx > 0:
+                pwm.set_throttle(1 * strength, 0)
+            elif dx < 0:
+                pwm.set_throttle(-1 * strength, 0)
+
+            if abs(dy) < threshold:
+                pass
+            elif dy > 0:
+                pwm.set_throttle(1 * strength, 2)
+            elif dy < 0:
+                pwm.set_throttle(-1 * strength, 2)
+
+            if abs(dz) < threshold:
+                pass
+            elif dz > 0:
+                pwm.set_throttle(1 * strength, 1)
+            elif dz < 0:
+                pwm.set_throttle(-1 * strength, 1)
+
 
         if state['activeControl'] == 'PID':
-            pass
+            pwm.set_throttle(0)
 
     else:
         # Disable all motors
@@ -192,7 +228,7 @@ if __name__ == "__main__":
 
     # Start the server
     app.listen(port)
-    tornado.ioloop.PeriodicCallback(controller, 10).start()
     tornado.ioloop.PeriodicCallback(poll_sensors, 10).start()
-    tornado.ioloop.PeriodicCallback(set_sensor, 1000).start()
+    tornado.ioloop.PeriodicCallback(controller, 10).start()
+    tornado.ioloop.PeriodicCallback(set_sensor, 500).start()
     tornado.ioloop.IOLoop.current().start()
