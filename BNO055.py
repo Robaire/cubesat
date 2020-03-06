@@ -96,31 +96,10 @@ class Dummy:
     def __init__(self):
         pass
 
-    def rand_vec(self):
-        return random.random(), random.random(), random.random()
+    def read_euler(self):
+        """ Read the euler angles from the sensor. """
+        return random.random() * 180, random.random() * 180, random.random() * 180
 
-    def read_accel(self):
-        """ Read data from the accelerometer. """
-        x, y, z = self.rand_vec()
-
-        mag = 9.81/((x**2 + y**2 + z**2)**(1/2))
-
-        return x*mag, y*mag, z*mag
-
-    def read_gyro(self):
-        """ Read data from the gyroscope. """
-        x, y, z = self.rand_vec()
-
-        mag = 0.05/((x**2 + y**2 + z**2)**(1/2))
-
-        return x*mag, y*mag, z*mag
-    def read_mag(self):
-        """ Read data from the magnetometer. """
-        x, y, z = self.rand_vec()
-
-        mag = -30/((x**2 + y**2 + z**2)**(1/2))
-        return x*mag, y*mag, z*mag
-
-    def read_temp(self):
-        """ Read data from the temperature sensor. """
-        return 25 + (random.random() - 0.5)
+    def read_quaternion(self):
+        """ Read orientation quaternion from the sensor. """
+        return random.random(), random.random(), random.random(), random.random()

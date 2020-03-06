@@ -1,11 +1,11 @@
 import smbus
+import random
 
 # Default I2C Address of the device
 ADDRESS = 0x67
 
 # Value of the sense resistor in ohms
 SENSE = 0.02
-
 
 class LTC2945:
     """ Sets up and reads data from the LTC2945 ADC. """
@@ -60,6 +60,18 @@ class Dummy:
     def __init__(self):
         pass
 
-    def read_voltage(self):
-        print(15)
-        return 15.0
+    def read_sense(self):
+        """ Returns the voltage drop across the sense resistor in volts."""
+        return random.random()
+
+    def read_vin(self):
+        """ Returns the voltage at the input pin in volts. """
+        return 15 + random.random() * 0.8
+
+    def read_current(self):
+        """ Returns the current measured across the sense resistor in amps. """
+        return random.random() * 1.8 + 0.5
+
+    def read_power(self):
+        """ Returns the current power consumption in watts. """
+        return self.read_current() * self.read_vin()
