@@ -82,7 +82,17 @@ class PCA9685:
 
     def set_throttle(self, throttle, channel=None):
         """ Throttle has range [-1, 1]. """
-        duty_cycle = 0.075 + (0.025 * throttle)
+
+        # Duty cycle deadband = [0.08, 0.10]
+        if throttle == 0:
+            duty_cycle = 0.09
+        elif throttle > 0.01:
+            duty_cycle = 0.10 + 0.03 * throttle
+        elif throttle < -0.01:
+            duty_cycle = 0.08 + 0.03 * throttle
+        else:
+            duty_cycle = 0.09
+
         self.set_duty_cycle(duty_cycle, channel)
 
 class Dummy:
