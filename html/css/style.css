@@ -1,0 +1,17 @@
+h1, h2, h3 {
+    text-align: center;
+}
+
+#header {
+    display: flex;
+    height: 12rem;
+    align-items: center;
+}
+
+#config {
+    height: 10rem;
+}
+
+#data {
+    height: 50rem;
+}
