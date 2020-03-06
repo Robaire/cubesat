@@ -63,7 +63,7 @@
                 <template v-if="state.activeControl == 'Bang-Bang'">
                     <p> Threshold: </p>
                     <input v-model="state.controlSettings.bangbang.threshold">
-                    <p> Strength: </p>
+                    <p> Strength %: </p>
                     <input v-model="state.controlSettings.bangbang.strength">
                 </template>
                 <template v-if="state.activeControl == 'PID'">
@@ -116,7 +116,7 @@
             </div>
 
             <div class="three columns">
-                <h3> Throttle </h3>
+                <h3> Throttle % </h3>
                 <h5 class="symbol"> &phi;: {{sensor.wheel.x * 100 | long}} </h5>
                 <h5 class="symbol"> &theta;: {{sensor.wheel.y * 100 | long}}</h5>
                 <h5 class="symbol"> &psi;: {{sensor.wheel.z * 100 | long}}</h5>
