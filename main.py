@@ -45,10 +45,10 @@ state = {
     'controlOptions': ['None', 'Proportional', 'Bang-Bang', 'PID'],
     'activeControl': 'None',
     'controlSettings': {
-        'proportional': {'constant': 0},
+        'proportional': {'constant': 0.001},
         'bangbang': {
-            'threshold': 0,
-            'strength': 0,
+            'threshold': 5,
+            'strength': 10,
         },
         'pid': {'p': 0, 'i': 0, 'd': 0},
         'target': {'x': 0, 'y': 0, 'z': 0}
