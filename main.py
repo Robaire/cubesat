@@ -50,7 +50,7 @@ state = {
             'threshold': 0,
             'strength': 0,
         },
-        'pid': { 'p': 0, 'i': 0, 'd': 0},
+        'pid': {'p': 0, 'i': 0, 'd': 0},
         'target': {'x': 0, 'y': 0, 'z': 0}
     }
 }
@@ -119,6 +119,7 @@ def controller():
         # Determine which control mode to use
         if state['activeControl'] == 'None':
             pwm.set_throttle(0)
+            sensor['wheel'] = {'x': 0, 'y': 0, 'z': 0}
 
         if state['activeControl'] == 'Proportional':
 
@@ -134,6 +135,8 @@ def controller():
             pwm.set_throttle(dy, 2)
             pwm.set_throttle(dz, 1)
 
+            sensor['wheel'] = {'x': dx, 'y': dy, 'z': dz}
+
         if state['activeControl'] == 'Bang-Bang':
 
             # Retrieve settings from the state
@@ -144,31 +147,42 @@ def controller():
             # Set the throttle based on the sign of the results
             if abs(dx) < threshold:
                 pwm.set_throttle(0, 0)
+                sensor['wheel']['x'] = 0
             elif dx > 0:
-                pwm.set_throttle(-1 * strength, 0)
-            elif dx < 0:
                 pwm.set_throttle(1 * strength, 0)
+                sensor['wheel']['x'] = 1 * strength
+            elif dx < 0:
+                pwm.set_throttle(-1 * strength, 0)
+                sensor['wheel']['x'] = -1 * strength
 
             if abs(dy) < threshold:
                 pwm.set_throttle(0, 2)
+                sensor['wheel']['y'] = 0
             elif dy > 0:
                 pwm.set_throttle(1 * strength, 2)
+                sensor['wheel']['y'] = 1 * strength
             elif dy < 0:
                 pwm.set_throttle(-1 * strength, 2)
+                sensor['wheel']['y'] = -1 * strength
 
             if abs(dz) < threshold:
                 pwm.set_throttle(0, 1)
+                sensor['wheel']['z'] = 0
             elif dz > 0:
                 pwm.set_throttle(1 * strength, 1)
+                sensor['wheel']['z'] = 1 * strength
             elif dz < 0:
                 pwm.set_throttle(-1 * strength, 1)
+                sensor['wheel']['z'] = -1 * strength
 
         if state['activeControl'] == 'PID':
             pwm.set_throttle(0)
+            sensor['wheel'] = {'x': 0, 'y': 0, 'z': 0}
 
     else:
         # Disable all motors
         pwm.set_throttle(0)
+        sensor['wheel'] = {'x': 0, 'y': 0, 'z': 0}
 
 
 class SocketHandler(tornado.websocket.WebSocketHandler):
