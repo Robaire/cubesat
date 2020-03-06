@@ -117,9 +117,9 @@
 
             <div class="three columns">
                 <h3> Velocity </h3>
-                <h5 class="symbol"> &phi;: {{sensor.wheel.x * 100 | long}} </h5>
-                <h5 class="symbol"> &theta;: {{sensor.wheel.y * 100 | long}}</h5>
-                <h5 class="symbol"> &psi;: {{sensor.wheel.z * 100 | long}}</h5>
+                <h5 class="symbol"> &phi;: {{sensor.wheel.x * (917 * sensor.voltage) | long}} </h5>
+                <h5 class="symbol"> &theta;: {{sensor.wheel.y * (917 * sensor.voltage) | long}}</h5>
+                <h5 class="symbol"> &psi;: {{sensor.wheel.z * (917 * sensor.voltage) | long}}</h5>
             </div>
         </div>
 
