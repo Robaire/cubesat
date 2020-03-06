@@ -133,21 +133,21 @@ def controller():
 
             # Set the throttle based on the sign of the results
             if abs(dx) < threshold:
-                pass
+                pwm.set_throttle(0, 0)
             elif dx > 0:
                 pwm.set_throttle(1 * strength, 0)
             elif dx < 0:
                 pwm.set_throttle(-1 * strength, 0)
 
             if abs(dy) < threshold:
-                pass
+                pwm.set_throttle(0, 2)
             elif dy > 0:
                 pwm.set_throttle(1 * strength, 2)
             elif dy < 0:
                 pwm.set_throttle(-1 * strength, 2)
 
             if abs(dz) < threshold:
-                pass
+                pwm.set_throttle(0, 1)
             elif dz > 0:
                 pwm.set_throttle(1 * strength, 1)
             elif dz < 0:
