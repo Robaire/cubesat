@@ -2,37 +2,93 @@
 <html>
 <head>
     <meta charset="utf-8" />
-    <script src="vue.min.js"></script>
-    <script src="d3.min.js"></script>
+    <title>Testbed Control Console</title>
+
+    <script src="js/vue.min.js"></script>
+    <script src="js/d3.min.js"></script>
+
+    <link rel="stylesheet" href="css/normalize.css">
+    <link rel="stylesheet" href="css/skeleton.css">
+    <link rel="stylesheet" href="css/style.css">
+
+    <link rel="icon" type="image/ico" href="resources/favicon.ico">
 </head>
+
 <body>
-    <div id="app">
-        <div id="header">
-            <h1>CubeSat Control Console</h1>
-        </div>
-
-        <div>
-            <div>
-                <h1> Motor Throttle %: </h1>
-                <input v-model.number="motor.throttle" type="text"/>
-                <button @click="setThrottle"> Set </button>
+    <div class="container" id="app">
+        <div class="row" id="header">
+            <div class="two columns">
+                <button> Enable </button>
             </div>
-<!--            <div>-->
-<!--                <p> Position: </p>-->
-<!--                <input v-model.number="commands.position.yaw" type="text"/>-->
-<!--                <input v-model.number="commands.position.pitch" type="text"/>-->
-<!--                <input v-model.number="commands.position.roll" type="text"/>-->
-<!--                <button @click="send_commands"> Set </button>-->
-<!--            </div>-->
+            <div class="eight columns">
+                <h1> Testbed Control Console </h1>
+            </div>
+            <div class="two columns">
+                <p> Voltage: {{voltage | short}} V</p>
+                <p> Current: {{current | short}} A</p>
+            </div>
         </div>
 
-        <div id="charts">
+        <div class="row" id="config">
+            <div class="3 columns"> <p> Configuration: </p> <button> Options </button> </div>
+            <div class="9 columns"> <p> Configuration specific options go here. </p> </div>
+        </div>
 
-            <svg id="velocity_graph"></svg>
+        <div class="row" id="data">
+            <div class="four columns">
+                <h3> Target </h3>
+                <p> &phi;: {{target.x | long}} </p>
+                <p> &theta;: {{target.y | long}}</p>
+                <p> &psi;: {{target.z | long}}</p>
+            </div>
 
+            <div class="four columns">
+                <h3> Orientation </h3>
+                <p> &phi;: {{euler.x | long}} </p>
+                <p> &theta;: {{euler.y | long}}</p>
+                <p> &psi;: {{euler.z | long}}</p>
+            </div>
+
+            <div class="four columns">
+                <h3> Wheel Velocity </h3>
+                <p> &phi;: {{wheel.x | long}} </p>
+                <p> &theta;: {{wheel.y | long}}</p>
+                <p> &psi;: {{wheel.z | long}}</p>
+            </div>
         </div>
     </div>
 
     <script src="main.js"></script>
 </body>
+<!--<body>-->
+<!--    <div id="app">-->
+<!--        <div id="header">-->
+<!--            <h1>St</h1>-->
+<!--            <h1>CubeSat Control Console</h1>-->
+<!--        </div>-->
+
+<!--        <div>-->
+<!--            <div>-->
+<!--                <h1> Motor Throttle %: </h1>-->
+<!--                <input v-model.number="motor.throttle" type="text"/>-->
+<!--                <button @click="setThrottle"> Set </button>-->
+<!--            </div>-->
+<!--&lt;!&ndash;            <div>&ndash;&gt;-->
+<!--&lt;!&ndash;                <p> Position: </p>&ndash;&gt;-->
+<!--&lt;!&ndash;                <input v-model.number="commands.position.yaw" type="text"/>&ndash;&gt;-->
+<!--&lt;!&ndash;                <input v-model.number="commands.position.pitch" type="text"/>&ndash;&gt;-->
+<!--&lt;!&ndash;                <input v-model.number="commands.position.roll" type="text"/>&ndash;&gt;-->
+<!--&lt;!&ndash;                <button @click="send_commands"> Set </button>&ndash;&gt;-->
+<!--&lt;!&ndash;            </div>&ndash;&gt;-->
+<!--        </div>-->
+
+<!--        <div id="charts">-->
+
+<!--            <svg id="velocity_graph"></svg>-->
+
+<!--        </div>-->
+<!--    </div>-->
+
+<!--    <script src="main.js"></script>-->
+<!--</body>-->
 </html>
