@@ -18,14 +18,13 @@
     <div class="container" id="app">
         <div class="row" id="header">
             <div class="two columns">
-                <p> Uptime: </p>
             </div>
             <div class="eight columns">
                 <h1> Testbed Control Console </h1>
             </div>
             <div class="two columns">
-                <p> Voltage: {{voltage | short}} V</p>
-                <p> Current: {{current | short}} A</p>
+                <p> Voltage: {{sensor.voltage | short}} V</p>
+                <p> Current: {{sensor.current | short}} A</p>
             </div>
         </div>
 
@@ -34,7 +33,7 @@
                 <h5> Active Control: </h5>
             </div>
             <div class="seven columns">
-                <select v-model="state.activeControl" v-on:change="updateControl">
+                <select v-model="state.activeControl" v-on:change="updateState">
                     <option v-for="option in state.controlOptions" v-bind:value="option"> {{option}} </option>
                 </select>
             </div>
@@ -77,7 +76,7 @@
                 </template>
             </div>
             <div class="one column">
-                <button v-on:click="updateControlSettings"> Update </button>
+                <button v-on:click="updateState"> Update </button>
             </div>
         </div>
         <div class="row" id="targetSetting">
@@ -104,23 +103,23 @@
 
             <div class="three columns">
                 <h3> Orientation </h3>
-                <h5 class="symbol"> &phi;: {{euler.x | long}} </h5>
-                <h5 class="symbol"> &theta;: {{euler.y | long}}</h5>
-                <h5 class="symbol"> &psi;: {{euler.z | long}}</h5>
+                <h5 class="symbol"> &phi;: {{sensor.euler.x | long}} </h5>
+                <h5 class="symbol"> &theta;: {{sensor.euler.y | long}}</h5>
+                <h5 class="symbol"> &psi;: {{sensor.euler.z | long}}</h5>
             </div>
 
             <div class="three columns">
                 <h3> &Delta; Target </h3>
-                <h5 class="symbol"> &phi;: {{euler.x - state.controlSettings.target.x | long}} </h5>
-                <h5 class="symbol"> &theta;: {{euler.y - state.controlSettings.target.y | long}}</h5>
-                <h5 class="symbol"> &psi;: {{euler.z - state.controlSettings.target.z | long}}</h5>
+                <h5 class="symbol"> &phi;: {{sensor.euler.x - state.controlSettings.target.x | long}} </h5>
+                <h5 class="symbol"> &theta;: {{sensor.euler.y - state.controlSettings.target.y | long}}</h5>
+                <h5 class="symbol"> &psi;: {{sensor.euler.z - state.controlSettings.target.z | long}}</h5>
             </div>
 
             <div class="three columns">
                 <h3> Velocity </h3>
-                <h5 class="symbol"> &phi;: {{wheel.x | long}} </h5>
-                <h5 class="symbol"> &theta;: {{wheel.y | long}}</h5>
-                <h5 class="symbol"> &psi;: {{wheel.z | long}}</h5>
+                <h5 class="symbol"> &phi;: {{sensor.wheel.x | long}} </h5>
+                <h5 class="symbol"> &theta;: {{sensor.wheel.y | long}}</h5>
+                <h5 class="symbol"> &psi;: {{sensor.wheel.z | long}}</h5>
             </div>
         </div>
 

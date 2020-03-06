@@ -2,13 +2,10 @@ from yaml import load, Loader
 import tornado.ioloop
 import tornado.web
 import tornado.websocket
-from asyncio import sleep
 import json
 import PCA9685
 import BNO055
 import LTC2945
-
-import random
 
 # Read in run config
 with open("config.yml", 'r') as file:
@@ -24,7 +21,7 @@ if config['mode'] == 'full':
 
     # Setup BNO055
     print("Initializing IMU")
-    sensor = BNO055.BNO055(1)
+    euler = BNO055.BNO055(1)
 
     # Setup LTC2945
     print("Initializing Voltage Monitor")
@@ -34,88 +31,13 @@ if config['mode'] == 'full':
     print("Initialization complete")
 
 else:
-
     # Create fake devices for testing
     pwm = PCA9685.Dummy()
-    sensor = BNO055.Dummy()
+    euler = BNO055.Dummy()
     power = LTC2945.Dummy()
-
 
 # Set the port for the web server
 port = config.get('port', 8080)
-
-# Outgoing Data Handlers
-def send_euler_data():
-
-    euler = sensor.read_euler()
-
-    message = json.dumps({
-        'type': 'EULER_DATA',
-        'x': euler[0],
-        'y': euler[1],
-        'z': euler[2]
-    })
-
-    for client in SocketHandler.clients:
-        client.write_message(message)
-
-
-def send_wheel_data():
-
-    message = json.dumps({
-        'type': 'WHEEL_DATA',
-        'x': random.random(),
-        'y': random.random(),
-        'z': random.random()
-    })
-
-    for client in SocketHandler.clients:
-        client.write_message(message)
-
-
-def send_power_data():
-
-    message = json.dumps({
-        'type': 'POWER_DATA',
-        'voltage': power.read_vin(),
-        'current': power.read_current()
-    })
-
-    for client in SocketHandler.clients:
-        client.write_message(message)
-
-
-def send_target_data():
-
-    message = json.dumps({
-        'type': 'TARGET_DATA',
-        'x': random.random(),
-        'y': random.random(),
-        'z': random.random()
-    })
-
-    for client in SocketHandler.clients:
-        client.write_message(message)
-
-
-def send_data():
-    send_euler_data()
-    send_wheel_data()
-    send_power_data()
-    send_target_data()
-
-# Incoming Data Handlers
-def setMotorSpeed(body):
-    throttle = body["throttle"]
-
-    # Map the throttle value onto the correct range
-    duty_cycle = 0.05 + ((throttle / 100) * 0.05)
-
-    print(f'Throttle: {throttle}%, Duty Cycle: {duty_cycle}, Pulse Width: {duty_cycle * 20}ms')
-
-    # Set the PWM driver to output the new duty cycle
-    pwm.set_duty_cycle(duty_cycle)
-
 
 # Global State
 state = {
@@ -128,42 +50,68 @@ state = {
             'threshold': 0,
             'strength': 0,
         },
-        'pid': {
-            'p': 0,
-            'i': 0,
-            'd': 0
-        },
-        'target': {
-            'x': 100,
-            'y': -20,
-            'z': 18
-        }
+        'pid': { 'p': 0, 'i': 0, 'd': 0},
+        'target': {'x': 0, 'y': 0, 'z': 0}
     }
 }
 
+# Most Recent Sensor Data
+sensor = {
+    'voltage': 0,
+    'current': 0,
+    'euler': {'x': 0, 'y': 0, 'z': 0},
+    'wheel': {'x': 0, 'y': 0, 'z': 0}
+}
 
-def send_state():
-    """ Sends the entire state to all connected clients. """
+
+def set_state(body):
+    """ Sends most recent state data to all clients. """
+
+    # Update the global state
+    global state
+    state = body
     message = json.dumps({
         'type': 'STATE',
         'body': state
     })
+
+    # Alert all clients of the new global state
     for client in SocketHandler.clients:
         client.write_message(message)
 
 
-def set_enable_state(body):
-    state['isEnabled'] = body
-    send_state()
+def set_sensor():
+    """ Sends most recent sensor data to all clients. """
+
+    message = json.dumps({
+        'type': 'SENSOR',
+        'body': sensor
+    })
+
+    for client in SocketHandler.clients:
+        client.write_message(message)
 
 
-def set_control_state(body):
-    state['activeControl'] = body
-    send_state()
+def poll_sensors():
+    """ Updates stored sensor values. """
 
-def set_control_settings(body):
-    state['controlSettings'] = body
-    send_state()
+    global sensor
+    sensor['voltage'] = power.read_vin()
+    sensor['current'] = power.read_current()
+    angles = euler.read_euler()
+    sensor['euler'] = {'x': angles[0], 'y': angles[1], 'z': angles[2]}
+
+
+def controller():
+    """ Handles all control logic. """
+
+    if state['isEnabled']:
+        pwm.set_duty_cycle(0.1, 1)
+
+    else:
+        # Disable all motors
+        pwm.set_duty_cycle(0.0)
+
 
 class SocketHandler(tornado.websocket.WebSocketHandler):
     """ Handles all socket requests from the client. """
@@ -201,11 +149,10 @@ class SocketHandler(tornado.websocket.WebSocketHandler):
 
         # Map of handler functions for different messages
         handlers = {
-            "example": None,
-            "MOTOR_SPEED": setMotorSpeed,
-            "ENABLE": set_enable_state,
-            "CONTROL": set_control_state,
-            "CONTROL_SETTINGS": set_control_settings
+            # "ENABLE": set_enable_state,
+            # "CONTROL": set_control_state,
+            # "CONTROL_SETTINGS": set_control_settings,
+            "STATE": set_state
         }
 
         # Call the appropriate handler
@@ -232,6 +179,7 @@ if __name__ == "__main__":
 
     # Start the server
     app.listen(port)
-    pc = tornado.ioloop.PeriodicCallback(send_data, 800)
-    pc.start()
+    tornado.ioloop.PeriodicCallback(controller, 10).start()
+    tornado.ioloop.PeriodicCallback(poll_sensors, 10).start()
+    tornado.ioloop.PeriodicCallback(set_sensor, 1000).start()
     tornado.ioloop.IOLoop.current().start()

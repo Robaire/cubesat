@@ -20,22 +20,21 @@ let app = new Vue({
                     threshold: 0,
                     strength: 0
                 },
-                pid: {
-                    p: 0,
-                    i: 0,
-                    d: 0
-                },
+                pid: {p: 0, i: 0, d: 0},
                 target: {x: 0, y: 0, z: 0}
             }
         },
 
-        newTarget: {x: 0, y: 0, z: 0},
+        // Recent Sensor Data
+        sensor: {
+            voltage: 0,
+            current: 0,
+            euler: {x: 0, y: 0, z: 0},
+            wheel: {x: 0, y: 0, z: 0}
+        },
 
-        // Sensor Display Values
-        voltage: 0,
-        current: 0,
-        euler: {x: 0, y: 0, z: 0},
-        wheel: {x: 0, y: 0, z: 0}
+        // Client Management
+        newTarget: {x: 0, y: 0, z: 0},
     },
 
     mounted: function() {
@@ -50,62 +49,48 @@ let app = new Vue({
             const message = JSON.parse(event.data);
 
             switch(message.type.toString()){
-                case "POWER_DATA":
-                    this.voltage = message.voltage;
-                    this.current = message.current;
-                    break;
-                case "EULER_DATA":
-                    this.euler.x = message.x;
-                    this.euler.y = message.y;
-                    this.euler.z = message.z;
-                    break;
-                case "WHEEL_DATA":
-                    this.wheel.x = message.x;
-                    this.wheel.y = message.y;
-                    this.wheel.z = message.z;
+                case "SENSOR":
+                    this.sensor = message.body;
                     break;
                 case "STATE":
                     this.state = message.body;
                     break;
-
+                default:
+                    console.log("Unknown message received!");
+                    break;
             }
-
-
         }
     },
 
     methods: {
-        sendMessage: function(header, body) {
-            // Sends a message to the server
-            const message = JSON.stringify({header: header, body: body});
+        updateState: function(){
+            const message = JSON.stringify({header: "STATE", body: this.state});
             this.ws.send(message);
         },
         toggleEnable: function() {
             this.state.isEnabled = !this.state.isEnabled;
-            this.sendMessage("ENABLE", this.state.isEnabled);
+            this.updateState();
         },
-
-        updateControl: function(){
-            this.sendMessage("CONTROL", this.state.activeControl);
-        },
-
-        updateControlSettings: function(){
-            this.sendMessage("CONTROL_SETTINGS", this.state.controlSettings);
-        },
-
         updateTarget: function(){
             this.state.controlSettings.target = this.newTarget;
             this.newTarget = {x: 0, y: 0, z: 0};
-            this.updateControlSettings();
+            this.updateState();
         }
     },
 
     filters: {
         short: function(number) {
-            return number.toFixed(2)
+            if(number) {
+                return number.toFixed(2)
+            } else {
+                return 0
+            }
         },
         long: function(number) {
-            return number.toFixed(2)
-        }
+            if(number) {
+                return number.toFixed(3)
+            } else {
+                return 0
+            }        }
     }
 });
