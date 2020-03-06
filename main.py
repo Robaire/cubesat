@@ -99,14 +99,27 @@ def poll_sensors():
     sensor['voltage'] = power.read_vin()
     sensor['current'] = power.read_current()
     angles = euler.read_euler()
-    sensor['euler'] = {'x': angles[0], 'y': angles[1], 'z': angles[2]}
+    sensor['euler'] = {'x': angles[1], 'y': -angles[2], 'z': -angles[0]}
 
 
 def controller():
     """ Handles all control logic. """
 
     if state['isEnabled']:
-        pwm.set_duty_cycle(0.1, 1)
+        # Determine which control mode to use
+
+        if state['activeControl'] is 'None':
+            pwm.set_duty_cycle(0.0)
+
+        if state['activeControl'] is 'Proportional':
+            constant = state['controlSettings']['proportional']['constant']
+            pwm.set_duty_cycle(constant, 1)
+
+        if state['activeControl'] is 'Bang-Bang':
+            pass
+
+        if state['activeControl'] is 'PID':
+            pass
 
     else:
         # Disable all motors
