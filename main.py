@@ -6,6 +6,9 @@ from asyncio import sleep
 import json
 import PCA9685
 import BNO055
+import LTC2945
+
+import random
 
 # Read in run config
 with open("config.yml", 'r') as file:
@@ -15,23 +18,31 @@ with open("config.yml", 'r') as file:
 if config['mode'] == 'full':
 
     # Setup PCA9685
-    print("Setting up PWM Driver")
+    print("Initializing PWM Driver")
     pwm = PCA9685.PCA9685(1)
     pwm.set_frequency(50)
 
     # Setup BNO055
-    print("Setting up Sensor")
+    print("Initializing IMU")
     sensor = BNO055.BNO055(1)
+
+    # Setup LTC2945
+    print("Initializing Voltage Monitor")
+    power = LTC2945.LTC2945(1)
+
+    # Setup complete
+    print("Initialization complete")
 
 else:
 
     # Create fake devices for testing
     pwm = PCA9685.Dummy()
     sensor = BNO055.Dummy()
+    power = LTC2945.Dummy()
+
 
 # Set the port for the web server
 port = config.get('port', 8080)
-
 
 # async def broadcast():
 #     """ Callback to push info to the clients"""
@@ -43,17 +54,64 @@ port = config.get('port', 8080)
 #         await sleep(0.1)
 
 
-def send_sensor_data():
+def send_euler_data():
 
-    data = {
-        'type': 'SENSOR_DATA',
-        'acceleration': sensor.read_accel(),
-        'angularVelocity': sensor.read_gyro(),
-        'magneticField': sensor.read_mag()
-    }
+    euler = sensor.read_euler()
+
+    message = json.dumps({
+        'type': 'EULER_DATA',
+        'x': euler[0],
+        'y': euler[1],
+        'z': euler[2]
+    })
 
     for client in SocketHandler.clients:
-        client.write_message(json.dumps(data))
+        client.write_message(message)
+
+
+def send_wheel_data():
+
+    message = json.dumps({
+        'type': 'WHEEL_DATA',
+        'x': random.random(),
+        'y': random.random(),
+        'z': random.random()
+    })
+
+    for client in SocketHandler.clients:
+        client.write_message(message)
+
+
+def send_power_data():
+
+    message = json.dumps({
+        'type': 'POWER_DATA',
+        'voltage': power.read_vin(),
+        'current': power.read_current()
+    })
+
+    for client in SocketHandler.clients:
+        client.write_message(message)
+
+
+def send_target_data():
+
+    message = json.dumps({
+        'type': 'TARGET_DATA',
+        'x': random.random(),
+        'y': random.random(),
+        'z': random.random()
+    })
+
+    for client in SocketHandler.clients:
+        client.write_message(message)
+
+
+def send_data():
+    send_euler_data()
+    send_wheel_data()
+    send_power_data()
+    send_target_data()
 
 
 def setMotorSpeed(body):
@@ -125,6 +183,6 @@ if __name__ == "__main__":
 
     # Start the server
     app.listen(port)
-    pc = tornado.ioloop.PeriodicCallback(send_sensor_data, 200)
-    # pc.start()
+    pc = tornado.ioloop.PeriodicCallback(send_data, 200)
+    pc.start()
     tornado.ioloop.IOLoop.current().start()
