@@ -1,2 +1,1 @@
-# cubesat
-CubeSat Testbed MQP
+# CubeSat Testbed MQP
